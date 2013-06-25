@@ -22,7 +22,7 @@
  * @property Account $acc
  * @property Category $cat
  */
-class Transaction extends CActiveRecord
+class Transaction extends HmfinappActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

@@ -3,6 +3,7 @@ class AccountTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'accounts'=>'Account',
+		'users'=>'User',
 	);
 
 	public function testCreate()
@@ -18,18 +19,22 @@ class AccountTest extends CDbTestCase
 	 			'name'=>$newAccountName,
 	 			'type'=>$newAccountType,
 	 			'balance'=>$newAccountBalance,
-	 			'create_time'=>'2013-03-15 00:00:00',
-	 			'create_user_id'=>1,
-	 			'update_time'=>'2013-03-15 00:00:00',
-	 			'update_user_id'=>1	 			
+	 			//remove 'create_time'=>'2013-03-15 00:00:00',
+	 			//remove 'create_user_id'=>1,
+	 			//remove 'update_time'=>'2013-03-15 00:00:00',
+	 			//remove 'update_user_id'=>1 
 	 		)
 	 	);
-	 	$this->assertTrue($newAccount->save(false));
+	 	//set the application user id to the first user in the test database populated 
+		//by the fixture data
+	 	Yii::app()->user->setId($this->users('user1')->id);
+	 	$this->assertTrue($newAccount->save());
 
 	 	//READ back the newly created account
 	 	$retreivedAccount = Account::model()->findByPk($newAccount->id);
 	 	$this->assertTrue($retreivedAccount instanceof Account);
 	 	$this->assertEquals($newAccountName, $retreivedAccount->name);
+	 	$this->assertEquals(Yii::app()->user->id, $retreivedAccount->create_user_id);
 
 	 }
 

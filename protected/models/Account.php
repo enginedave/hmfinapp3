@@ -18,7 +18,7 @@
  * @property User $user
  * @property Transaction[] $transactions
  */
-class Account extends CActiveRecord
+class Account extends HmfinappActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
