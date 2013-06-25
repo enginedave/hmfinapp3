@@ -136,9 +136,9 @@ ALTER TABLE `tbl_category` ADD FOREIGN KEY (user_id) REFERENCES `tbl_user` (`id`
 -- ---
 
 
-INSERT INTO `tbl_user` (`email`,`password`,`role`,`last_login_time`,`create_time`,`create_user_id`,`update_time`,`update_user_id`) VALUES ('user1@test.com','user1','basic','','','','','');
-INSERT INTO `tbl_user` (`email`,`password`,`role`,`last_login_time`,`create_time`,`create_user_id`,`update_time`,`update_user_id`) VALUES ('user2@test.com','user2','premimum','','','','','');
-INSERT INTO `tbl_user` (`email`,`password`,`role`,`last_login_time`,`create_time`,`create_user_id`,`update_time`,`update_user_id`) VALUES ('user3@test.com','user3','admin','','','','','');
+INSERT INTO `tbl_user` (`email`,`password`,`role`,`last_login_time`,`create_time`,`create_user_id`,`update_time`,`update_user_id`) VALUES ('user1@test.com', md5('user1'),'basic','','','','','');
+INSERT INTO `tbl_user` (`email`,`password`,`role`,`last_login_time`,`create_time`,`create_user_id`,`update_time`,`update_user_id`) VALUES ('user2@test.com', md5('user2'),'premimum','','','','','');
+INSERT INTO `tbl_user` (`email`,`password`,`role`,`last_login_time`,`create_time`,`create_user_id`,`update_time`,`update_user_id`) VALUES ('user3@test.com', md5('user3'),'admin','','','','','');
 				
 INSERT INTO `tbl_account` (`user_id`,`name`,`type`,`balance`,`create_time`,`create_user_id`,`update_time`,`update_user_id`) VALUES ('1','Santander','Current','1234.56','','','','');
 INSERT INTO `tbl_account` (`user_id`,`name`,`type`,`balance`,`create_time`,`create_user_id`,`update_time`,`update_user_id`) VALUES ('1','Santander','Saving','789.56','','','','');
