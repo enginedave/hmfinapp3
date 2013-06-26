@@ -48,6 +48,7 @@ class User extends HmfinappActiveRecord
 		// will receive user inputs.
 		return array(
 			array('email, password', 'required'),
+			array('email','unique'),
 			array('email, role', 'length', 'max'=>100),
 			array('password', 'length', 'max'=>150),
 			array('last_login_time', 'safe'),
