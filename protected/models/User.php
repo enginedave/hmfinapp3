@@ -48,13 +48,12 @@ class User extends HmfinappActiveRecord
 		// will receive user inputs.
 		return array(
 			array('email, password', 'required'),
-			array('create_user_id, update_user_id', 'numerical', 'integerOnly'=>true),
 			array('email, role', 'length', 'max'=>100),
 			array('password', 'length', 'max'=>150),
-			array('last_login_time, create_time, update_time', 'safe'),
+			array('last_login_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, email, password, role, last_login_time, create_time, create_user_id, update_time, update_user_id', 'safe', 'on'=>'search'),
+			array('id, email, password, role, last_login_time', 'safe', 'on'=>'search'),
 		);
 	}
 

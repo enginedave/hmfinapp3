@@ -50,13 +50,13 @@ class Transaction extends HmfinappActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('acc_id, cat_id, pay_id, reconciled, create_user_id, update_user_id', 'numerical', 'integerOnly'=>true),
+			array('acc_id, cat_id, pay_id, reconciled', 'numerical', 'integerOnly'=>true),
 			array('amount', 'length', 'max'=>10),
 			array('notes', 'length', 'max'=>256),
-			array('date, create_time, update_time', 'safe'),
+			array('date', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, date, acc_id, cat_id, pay_id, amount, reconciled, notes, create_time, create_user_id, update_time, update_user_id', 'safe', 'on'=>'search'),
+			array('id, date, acc_id, cat_id, pay_id, amount, reconciled, notes', 'safe', 'on'=>'search'),
 		);
 	}
 

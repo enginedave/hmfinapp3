@@ -46,13 +46,12 @@ class Account extends HmfinappActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, create_user_id, update_user_id', 'numerical', 'integerOnly'=>true),
+			array('user_id', 'numerical', 'integerOnly'=>true),
 			array('name, type', 'length', 'max'=>100),
 			array('balance', 'length', 'max'=>10),
-			array('create_time, update_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, user_id, name, type, balance, create_time, create_user_id, update_time, update_user_id', 'safe', 'on'=>'search'),
+			array('id, user_id, name, type, balance', 'safe', 'on'=>'search'),
 			array('name, type', 'required'),
 		);
 	}
