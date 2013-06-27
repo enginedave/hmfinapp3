@@ -120,4 +120,17 @@ class User extends HmfinappActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	// perform one-way encryption on the password before we store it in
+	// the database
+	protected function afterValidate()
+	{
+		parent::afterValidate();
+		$this->password = $this->encrypt($this->password);
+	}
+
+	public function encrypt($value)
+	{
+		return md5($value);
+	}
 }
