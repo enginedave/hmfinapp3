@@ -10,6 +10,8 @@
 	<?php echo $form->textFieldRow($model,'email',array('class'=>'span5','maxlength'=>100)); ?>
 
 	<?php echo $form->passwordFieldRow($model,'password',array('class'=>'span5','maxlength'=>150)); ?>
+	
+	<?php echo $form->passwordFieldRow($model,'password_repeat',array('class'=>'span5','maxlength'=>150)); ?>
 
 	<?php echo $form->textFieldRow($model,'role',array('class'=>'span5','maxlength'=>100)); ?>
 

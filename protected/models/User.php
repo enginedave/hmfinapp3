@@ -21,6 +21,10 @@
  */
 class User extends HmfinappActiveRecord
 {
+	// the _repeat suffix is added to the password to allow the compare rule 
+	// to be used to check the two passwords are equal
+	public $password_repeat;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -47,11 +51,12 @@ class User extends HmfinappActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('email, password', 'required'),
+			array('email, password, role', 'required'),
 			array('email','unique'),
+			array('password', 'compare'), //this will compare password and password_repeat
 			array('email, role', 'length', 'max'=>100),
 			array('password', 'length', 'max'=>150),
-			array('last_login_time', 'safe'),
+			array('last_login_time, password_repeat', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, email, password, role, last_login_time', 'safe', 'on'=>'search'),
