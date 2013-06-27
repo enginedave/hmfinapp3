@@ -31,4 +31,14 @@ return array(
 		'update_time'=>'',
 		'update_user_id'=>'',
 	),
+	'user4'=>array(
+		'email'=>'user4@test.com',
+		'password' => MD5('user4'),
+		'role'=>'basic',
+		'last_login_time'=>'',
+		'create_time'=>'',
+		'create_user_id'=>'',
+		'update_time'=>'',
+		'update_user_id'=>'',
+	),
 );

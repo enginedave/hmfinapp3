@@ -13,7 +13,7 @@
 	
 	<?php echo $form->passwordFieldRow($model,'password_repeat',array('class'=>'span5','maxlength'=>150)); ?>
 
-	<?php echo $form->textFieldRow($model,'role',array('class'=>'span5','maxlength'=>100)); ?>
+	<?php echo $form->dropDownListRow($model, 'role', $model->getTypeOptions(), array('class'=>'span5','maxlength'=>100)); ?>
 
 	<?php echo $form->textFieldRow($model,'last_login_time',array('class'=>'span5')); ?>
 

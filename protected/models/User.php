@@ -25,6 +25,10 @@ class User extends HmfinappActiveRecord
 	// to be used to check the two passwords are equal
 	public $password_repeat;
 	
+	const TYPE_BASIC=0;
+	const TYPE_PREMIUM=1;
+	const TYPE_ADMIN=2;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -132,5 +136,14 @@ class User extends HmfinappActiveRecord
 	public function encrypt($value)
 	{
 		return md5($value);
+	}
+	
+	public function getTypeOptions()
+	{
+		return array(
+			self::TYPE_BASIC=>'Basic',
+			self::TYPE_PREMIUM=>'Premium',
+			self::TYPE_ADMIN=>'Admin',
+		);
 	}
 }
