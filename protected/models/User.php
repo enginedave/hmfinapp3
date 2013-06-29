@@ -55,7 +55,7 @@ class User extends HmfinappActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('email, password, role', 'required'),
+			array('email, password, password_repeat, role', 'required'),
 			array('email','unique'),
 			array('password', 'compare'), //this will compare password and password_repeat
 			array('email, role', 'length', 'max'=>100),
