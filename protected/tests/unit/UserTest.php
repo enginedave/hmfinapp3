@@ -16,7 +16,7 @@ class UserTest extends CDbTestCase
 	 			'email'=>$newUserEmail,
 	 			'password'=>'password',
 	 			'password_repeat'=>'password',
-	 			'role'=>'basic',
+	 			'role'=>'0',
 	 			'last_login_time'=>'',
 	 		)
 	 	);

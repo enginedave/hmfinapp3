@@ -7,7 +7,7 @@
  * @property integer $id
  * @property string $email
  * @property string $password
- * @property string $role
+ * @property integer $role
  * @property string $last_login_time
  * @property string $create_time
  * @property integer $create_user_id
@@ -58,8 +58,9 @@ class User extends HmfinappActiveRecord
 			array('email, password, password_repeat, role', 'required'),
 			array('email','unique'),
 			array('password', 'compare'), //this will compare password and password_repeat
-			array('email, role', 'length', 'max'=>100),
+			array('email', 'length', 'max'=>100),
 			array('password', 'length', 'max'=>150),
+			array('role','numerical','integerOnly'=>true),
 			array('last_login_time, password_repeat', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -113,7 +114,7 @@ class User extends HmfinappActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('email',$this->email,true);
 		$criteria->compare('password',$this->password,true);
-		$criteria->compare('role',$this->role,true);
+		$criteria->compare('role',$this->role);
 		$criteria->compare('last_login_time',$this->last_login_time,true);
 		$criteria->compare('create_time',$this->create_time,true);
 		$criteria->compare('create_user_id',$this->create_user_id);
