@@ -100,7 +100,6 @@ class RbacCommand extends CConsoleCommand
 			$this->_authManager->createOperation("adminTransaction","administer transaction");
 			$this->_authManager->createOperation("indexTransaction","view a list of transactions");
 			
-			
 			//create the "basic" user role and add the appropriate permissions as children to this role
 			//the "basic" role can CRUD their own Accounts, Categories, Payees and Transactions
 			$role=$this->_authManager->createRole("basic");
@@ -153,10 +152,10 @@ class RbacCommand extends CConsoleCommand
 			$role->addChild("indexUser");
 
 			
-			//test the assignment of users 
-			//$this->_authManager->assign('basic', 1);
-			//$this->_authManager->assign('premium', 2);
-			//$this->_authManager->assign('administrator', 3);
+			//assign the roles to the three initial users that have been added to the database
+			$this->_authManager->assign('basic', 1);
+			$this->_authManager->assign('premium', 2);
+			$this->_authManager->assign('administrator', 3);
 			
 			
 			//provide a message indicating success
