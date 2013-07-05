@@ -147,4 +147,25 @@ class User extends HmfinappActiveRecord
 			self::TYPE_ADMIN=>'Admin',
 		);
 	}
+	
+	public function updateAuthAssignment()
+	{
+		// clear the existing AuthAssignment by deleting the row from the database		
+		$this->deleteAuthAssignment($this->id);
+
+		//Yii::app()->authManager->assign('basic', 25) this equals user 25 being assigned to role 'basic'
+		if ($this->role==0) Yii::app()->authManager->assign('basic', $this->id);
+		if ($this->role==1) Yii::app()->authManager->assign('premium', $this->id);
+		if ($this->role==2) Yii::app()->authManager->assign('administrator', $this->id);
+	}
+	
+	public function deleteAuthAssignment($deluserid)
+	{
+		// clear the existing AuthAssignment by deleting the row from the database
+		$sql = "DELETE FROM AuthAssignment WHERE userid=:userId";
+		$command = Yii::app()->db->createCommand($sql);
+		$command->bindValue(":userId", $deluserid, PDO::PARAM_INT);
+		$command->execute();
+	}
+	
 }

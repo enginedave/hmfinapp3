@@ -13,7 +13,13 @@
 	
 	<?php echo $form->passwordFieldRow($model,'password_repeat',array('class'=>'span5','maxlength'=>150)); ?>
 
-	<?php echo $form->dropDownListRow($model, 'role', $model->getTypeOptions(), array('class'=>'span5','maxlength'=>100)); ?>
+	<?php 
+		//dont display the role selection for a create new user only on update
+		if (!$model->isNewRecord) 
+		{
+			echo $form->dropDownListRow($model, 'role', $model->getTypeOptions(), array('class'=>'span5','maxlength'=>100));
+		}
+	?>
 
 	<div class="form-actions">
 		<?php $this->widget('bootstrap.widgets.TbButton', array(
