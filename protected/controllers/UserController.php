@@ -73,12 +73,9 @@ class UserController extends Controller
 		if(isset($_POST['User']))
 		{
 			$model->attributes=$_POST['User'];
-			//on create make the role of the new user 0 i.e. a basic user 
+			//create a new user as a basic user i.e. role = 0
 			$model->role = 0;
-			//$model->updateAuthAssignment();
 			if($model->save())
-				//if the save is successful update the AuthAssignment to allow this new user to access the app
-				$model->updateAuthAssignment();
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
@@ -103,7 +100,6 @@ class UserController extends Controller
 		{
 			$model->attributes=$_POST['User'];
 			if($model->save())
-				$model->updateAuthAssignment();
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
@@ -123,8 +119,6 @@ class UserController extends Controller
 		{
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
-			//remove the reference from the auth assignment table
-			User::model()->deleteAuthAssignment($id);
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))

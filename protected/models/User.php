@@ -133,6 +133,30 @@ class User extends HmfinappActiveRecord
 		parent::afterValidate();
 		$this->password = $this->encrypt($this->password);
 	}
+	
+	// create or update the authAssignment for the user 
+	protected function afterSave()
+	{
+		if($this->isNewRecord)
+		{
+			Yii::app()->authManager->assign('basic', $this->id);
+		}
+		else
+		{
+			$this->updateAuthAssignment();
+		}
+		parent::afterSave();
+	}
+	
+	protected function afterDelete()
+	{
+		$this->deleteAuthAssignment($this->id);
+		parent::afterDelete();
+	}
+
+
+
+	//**************** extra functions *****************
 
 	public function encrypt($value)
 	{
@@ -148,7 +172,13 @@ class User extends HmfinappActiveRecord
 		);
 	}
 	
-	public function updateAuthAssignment()
+	
+	
+	
+	
+	//*********** private functions  **************
+	
+	private function updateAuthAssignment()
 	{
 		// clear the existing AuthAssignment by deleting the row from the database		
 		$this->deleteAuthAssignment($this->id);
@@ -159,7 +189,7 @@ class User extends HmfinappActiveRecord
 		if ($this->role==2) Yii::app()->authManager->assign('administrator', $this->id);
 	}
 	
-	public function deleteAuthAssignment($deluserid)
+	private function deleteAuthAssignment($deluserid)
 	{
 		// clear the existing AuthAssignment by deleting the row from the database
 		$sql = "DELETE FROM AuthAssignment WHERE userid=:userId";
