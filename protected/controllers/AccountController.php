@@ -7,6 +7,9 @@ class AccountController extends Controller
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout='//layouts/column2';
+	// @var private property containing the associated user model instance
+	private $_user = null;
+	
 
 	/**
 	 * @return array action filters
@@ -15,6 +18,8 @@ class AccountController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
+			//usercontext loads the currently logged in user and limits operations on Accounts to those owned by him.
+			'userContext + create, index, admin, view, update, delete',
 		);
 	}
 
@@ -50,9 +55,17 @@ class AccountController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
-		));
+		$requestedAccount = $this->loadModel($id);
+		if($requestedAccount->user_id == $this->_user->id)
+		{
+			$this->render('view',array(
+				'model'=>$this->loadModel($id),
+			));
+		}
+		else
+		{
+			throw new CHttpException(403,'You are not authorized to perform this action.');
+		}
 	}
 
 	/**
@@ -62,7 +75,8 @@ class AccountController extends Controller
 	public function actionCreate()
 	{
 		$model=new Account;
-
+		$model->user_id = $this->_user->id;
+		
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
@@ -89,17 +103,25 @@ class AccountController extends Controller
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Account']))
+		
+		if ($model->user_id == $this->_user->id)
 		{
-			$model->attributes=$_POST['Account'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
-		}
+			if(isset($_POST['Account']))
+			{
+				$model->attributes=$_POST['Account'];
+				if($model->save())
+					$this->redirect(array('view','id'=>$model->id));
+			}
 
-		$this->render('update',array(
-			'model'=>$model,
-		));
+			$this->render('update',array(
+				'model'=>$model,
+			));
+		}
+		else
+		{
+			throw new CHttpException(403,'You are not authorized to perform this action.');
+		}
+		
 	}
 
 	/**
@@ -109,25 +131,40 @@ class AccountController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
-		{
-			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
+		$model=$this->loadModel($id);
+		if ($model->user_id == $this->_user->id)
+		{		
+			if(Yii::app()->request->isPostRequest)
+			{
+				// we only allow deletion via POST request
+				$model->delete();
 
-			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if(!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+				// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+				if(!isset($_GET['ajax']))
+					$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+			}
+			else
+			{
+				throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+			}
 		}
 		else
-			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+		{
+			throw new CHttpException(403,'You are not authorized to perform this action.');
+		}
 	}
 
 	/**
-	 * Lists all models.
+	 * Lists all models belonging to this user.
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Account');
+		$dataProvider=new CActiveDataProvider('Account', array(
+			'criteria'=>array(
+				'condition'=>'user_id=:userId',
+				'params'=>array(':userId'=>$this->_user->id),
+			),
+		));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -142,6 +179,9 @@ class AccountController extends Controller
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Account']))
 			$model->attributes=$_GET['Account'];
+			
+		//limit the list of accounts to those by the currently logged in user	
+		$model->user_id = $this->_user->id;
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -173,4 +213,32 @@ class AccountController extends Controller
 			Yii::app()->end();
 		}
 	}
+	
+	//since Accounts belong to users the following sets up a User context 
+	//for the accounts
+	public function filterUserContext($filterChain)
+	{
+		//load the associated user for this account which will be the Id of the currently
+		//logged in user
+		$this->loadUser(Yii::app()->user->id);
+		
+		//continue to process the filter
+		$filterChain->run();
+	}
+	
+	protected function loadUser($user_id)
+	{
+		if($this->_user===null)
+		{
+			$this->_user=User::model()->findbyPk($user_id);
+			if($this->_user===null)
+			{
+				throw new CHttpException(404,'The requested user does not
+				exist.');
+			}
+		
+		}
+		return $this->_user;
+	}
+	
 }
