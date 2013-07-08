@@ -52,7 +52,7 @@ class Account extends HmfinappActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, name, type, balance', 'safe', 'on'=>'search'),
-			array('name, type', 'required'),
+			array('name, type, balance', 'required'),
 		);
 	}
 

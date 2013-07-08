@@ -49,6 +49,7 @@ class Category extends HmfinappActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, name', 'safe', 'on'=>'search'),
+			array('name', 'required'),
 		);
 	}
 
