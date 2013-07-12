@@ -123,4 +123,20 @@ class Transaction extends HmfinappActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	protected function beforeSave()
+	{
+		//convert the local d-m-Y format to the mysql format of Y-m-d 
+		parent::beforeSave();
+		$this->date = (($this->date==null) ? $this->date=null : $this->date=date('Y-m-d', strtotime($this->date)));
+		return TRUE;
+	}
+	protected function afterFind()
+	{
+		//convert from mysql format to local format
+		parent::afterFind();
+		$this->date = (($this->date==null) ? $this->date=null : $this->date=date('d-m-Y', strtotime($this->date)));
+		return TRUE;
+	}
+	
 }

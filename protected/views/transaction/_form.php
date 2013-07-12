@@ -7,7 +7,25 @@
 
 	<?php echo $form->errorSummary($model); ?>
 
-	<?php echo $form->textFieldRow($model,'date',array('class'=>'span5')); ?>
+	<?php //echo $form->textFieldRow($model,'date',array('class'=>'span5')); ?>
+	<?php echo $form->labelEx($model,'date'); ?>
+	
+	<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+					'model'=>$model,
+					'attribute'=>'date',
+					// additional javascript options for the date picker plugin
+					'options' => array(
+						'showAnim' => 'clip',
+						'dateFormat'=>'dd-mm-yy',
+						'changeMonth'=>'true',
+						'changeYear'=>'true',
+						'defaultDate'=>null,
+					),
+					'htmlOptions' => array(
+						//'style' => 'width: 130px;',
+						'class'=>'span5'
+					),
+				));   ?>
 
 	<?php echo $form->textFieldRow($model,'acc_id',array('class'=>'span5')); ?>
 
