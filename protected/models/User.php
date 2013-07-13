@@ -198,4 +198,33 @@ class User extends HmfinappActiveRecord
 		$command->execute();
 	}
 	
+	public function getUserAccounts($theUser)
+	{
+		//query the Accounts table and return the list of THIS users accounts
+		$sql = "SELECT id, name  FROM `tbl_account` WHERE user_id=:userId ORDER BY name ASC";
+		$command = Yii::app()->db->createCommand($sql);
+		$command->bindValue(":userId", $theUser, PDO::PARAM_INT);
+		$rows = $command->queryAll();
+		return $rows;
+	}
+	
+	public function getUserCategorys($theUser)
+	{
+		//query the Category table and return the list of THIS users categorys
+		$sql = "SELECT id, name FROM `tbl_category` WHERE user_id=:userId ORDER BY name ASC";
+		$command = Yii::app()->db->createCommand($sql);
+		$command->bindValue(":userId", $theUser, PDO::PARAM_INT);
+		$rows = $command->queryAll();
+		return $rows;	
+	}
+	
+	public function getUserPayees($theUser)
+	{
+		//query the Payee table and return the list of THIS users payees
+		$sql = "SELECT id, name FROM `tbl_payee` WHERE user_id=:userId ORDER BY name ASC";
+		$command = Yii::app()->db->createCommand($sql);
+		$command->bindValue(":userId", $theUser, PDO::PARAM_INT);
+		$rows = $command->queryAll();
+		return $rows;	
+	}
 }

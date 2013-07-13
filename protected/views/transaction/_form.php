@@ -7,9 +7,7 @@
 
 	<?php echo $form->errorSummary($model); ?>
 
-	<?php //echo $form->textFieldRow($model,'date',array('class'=>'span5')); ?>
 	<?php echo $form->labelEx($model,'date'); ?>
-	
 	<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 					'model'=>$model,
 					'attribute'=>'date',
@@ -26,19 +24,19 @@
 						'class'=>'span5'
 					),
 				));   ?>
-
-	<?php echo $form->textFieldRow($model,'acc_id',array('class'=>'span5')); ?>
-
-	<?php echo $form->textFieldRow($model,'cat_id',array('class'=>'span5')); ?>
-
-	<?php echo $form->textFieldRow($model,'pay_id',array('class'=>'span5')); ?>
-
+				
+	<?php echo $form->dropDownListRow($model, 'acc_id', CHtml::listData(User::model()->getUserAccounts(Yii::app()->user->id), 'id', 'name'), array('class'=>'span5')); ?>
+	
+	<?php echo $form->dropDownListRow($model, 'cat_id', CHtml::listData(User::model()->getUserCategorys(Yii::app()->user->id), 'id', 'name'), array('class'=>'span5')); ?>
+	
+	<?php echo $form->dropDownListRow($model, 'pay_id', CHtml::listData(User::model()->getUserPayees(Yii::app()->user->id), 'id', 'name'), array('class'=>'span5')); ?>
+	
 	<?php echo $form->textFieldRow($model,'amount',array('class'=>'span5','maxlength'=>10)); ?>
-
-	<?php echo $form->textFieldRow($model,'reconciled',array('class'=>'span5')); ?>
-
+	
+	<?php echo $form->checkBoxRow($model, 'reconciled'); ?>
+	
 	<?php echo $form->textFieldRow($model,'notes',array('class'=>'span5','maxlength'=>256)); ?>
-
+	
 	<div class="form-actions">
 		<?php $this->widget('bootstrap.widgets.TbButton', array(
 			'buttonType'=>'submit',
@@ -46,5 +44,5 @@
 			'label'=>$model->isNewRecord ? 'Create' : 'Save',
 		)); ?>
 	</div>
-
+	
 <?php $this->endWidget(); ?>
