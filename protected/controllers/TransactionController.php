@@ -23,7 +23,7 @@ class TransactionController extends Controller
 		return array(
 			'accessControl', // perform access control for CRUD operations
 			//usercontext loads the currently logged in user and limits operations on Transactions to those Accounts owned by him.
-			'userContext + create',
+			'userContext + create, view, update, delete',
 		);
 	}
 
@@ -59,9 +59,27 @@ class TransactionController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
-		));
+		$transaction = $this->loadModel($id);
+		//test that the logged in user owns this account (check for tampering of data)
+		//loop through this users accounts
+		foreach($this->userAccounts as $account)
+		{
+			$ownsThisAccount = false;
+			//test that one of the id's match 
+			if ($account['id']==$transaction->acc_id) 
+			{
+				$ownsThisAccount = true;
+				break;
+			}		
+		}
+		//if account owned by this user save the model else throw exception
+		if($ownsThisAccount)
+		{
+			$this->render('view',array(
+				'model'=>$transaction,
+				));
+		}
+		else throw new CHttpException(403,'You are not authorized to view this Transaction.');
 	}
 
 	/**
@@ -118,13 +136,46 @@ class TransactionController extends Controller
 		if(isset($_POST['Transaction']))
 		{
 			$model->attributes=$_POST['Transaction'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			//test that the logged in user owns this account (check for tampering of post data)
+			//loop through this users accounts
+			foreach($this->userAccounts as $account)
+			{
+				$ownsThisAccount = false;
+				//test that one of the id's match 
+				if ($account['id']==$model->acc_id) 
+				{
+					$ownsThisAccount = true;
+					break;
+				}		
+			}
+			//if account owned by this user save the model else throw exception
+			if($ownsThisAccount)
+			{
+				if($model->save()) $this->redirect(array('view','id'=>$model->id));
+			}
+			else throw new CHttpException(403,'You are not authorized to update a Transaction on this account.');
 		}
-
-		$this->render('update',array(
-			'model'=>$model,
-		));
+		
+		//test that the logged in user owns this account (check for tampering of data)
+		//loop through this users accounts
+		foreach($this->userAccounts as $account)
+		{
+			$ownsThisAccount = false;
+			//test that one of the id's match 
+			if ($account['id']==$model->acc_id) 
+			{
+				$ownsThisAccount = true;
+				break;
+			}		
+		}
+		//if account owned by this user save the model else throw exception
+		if($ownsThisAccount)
+		{
+			$this->render('update',array(
+					'model'=>$model,
+				));
+		}
+		else throw new CHttpException(403,'You are not authorized to update a Transaction on this account.');	
 	}
 
 	/**
@@ -134,17 +185,35 @@ class TransactionController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
+		$transaction = $this->loadModel($id);
+		//test that the logged in user owns this account (check for tampering of data)
+		//loop through this users accounts
+		foreach($this->userAccounts as $account)
 		{
-			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
-
-			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if(!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+			$ownsThisAccount = false;
+			//test that one of the id's match 
+			if ($account['id']==$transaction->acc_id) 
+			{
+				$ownsThisAccount = true;
+				break;
+			}		
 		}
-		else
-			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+		//if account owned by this user save the model else throw exception
+		if($ownsThisAccount)
+		{
+			if(Yii::app()->request->isPostRequest)
+			{
+				// we only allow deletion via POST request
+				$this->loadModel($id)->delete();
+
+				// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+				if(!isset($_GET['ajax']))
+					$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+			}
+			else
+				throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+		}
+		else throw new CHttpException(403,'You are not authorized to delete this Transaction.');
 	}
 
 	/**
