@@ -60,20 +60,8 @@ class TransactionController extends Controller
 	public function actionView($id)
 	{
 		$transaction = $this->loadModel($id);
-		//test that the logged in user owns this account (check for tampering of data)
-		//loop through this users accounts
-		foreach($this->userAccounts as $account)
-		{
-			$ownsThisAccount = false;
-			//test that one of the id's match 
-			if ($account['id']==$transaction->acc_id) 
-			{
-				$ownsThisAccount = true;
-				break;
-			}		
-		}
 		//if account owned by this user save the model else throw exception
-		if($ownsThisAccount)
+		if($this->userOwnsAccount($transaction->acc_id))
 		{
 			$this->render('view',array(
 				'model'=>$transaction,
@@ -96,20 +84,8 @@ class TransactionController extends Controller
 		if(isset($_POST['Transaction']))
 		{
 			$model->attributes=$_POST['Transaction'];
-			//test that the logged in user owns this account (check for tampering of post data)
-			//loop through this users accounts
-			foreach($this->userAccounts as $account)
-			{
-				$ownsThisAccount = false;
-				//test that one of the id's match 
-				if ($account['id']==$model->acc_id) 
-				{
-					$ownsThisAccount = true;
-					break;
-				}		
-			}
 			//if account owned by this user save the model else throw exception
-			if($ownsThisAccount)
+			if($this->userOwnsAccount($model->acc_id))
 			{
 				if($model->save()) $this->redirect(array('view','id'=>$model->id));
 			}
@@ -136,40 +112,16 @@ class TransactionController extends Controller
 		if(isset($_POST['Transaction']))
 		{
 			$model->attributes=$_POST['Transaction'];
-			//test that the logged in user owns this account (check for tampering of post data)
-			//loop through this users accounts
-			foreach($this->userAccounts as $account)
-			{
-				$ownsThisAccount = false;
-				//test that one of the id's match 
-				if ($account['id']==$model->acc_id) 
-				{
-					$ownsThisAccount = true;
-					break;
-				}		
-			}
 			//if account owned by this user save the model else throw exception
-			if($ownsThisAccount)
+			if($this->userOwnsAccount($model->acc_id))
 			{
 				if($model->save()) $this->redirect(array('view','id'=>$model->id));
 			}
 			else throw new CHttpException(403,'You are not authorized to update a Transaction on this account.');
 		}
 		
-		//test that the logged in user owns this account (check for tampering of data)
-		//loop through this users accounts
-		foreach($this->userAccounts as $account)
-		{
-			$ownsThisAccount = false;
-			//test that one of the id's match 
-			if ($account['id']==$model->acc_id) 
-			{
-				$ownsThisAccount = true;
-				break;
-			}		
-		}
 		//if account owned by this user save the model else throw exception
-		if($ownsThisAccount)
+		if($this->userOwnsAccount($model->acc_id))
 		{
 			$this->render('update',array(
 					'model'=>$model,
@@ -186,20 +138,8 @@ class TransactionController extends Controller
 	public function actionDelete($id)
 	{
 		$transaction = $this->loadModel($id);
-		//test that the logged in user owns this account (check for tampering of data)
-		//loop through this users accounts
-		foreach($this->userAccounts as $account)
-		{
-			$ownsThisAccount = false;
-			//test that one of the id's match 
-			if ($account['id']==$transaction->acc_id) 
-			{
-				$ownsThisAccount = true;
-				break;
-			}		
-		}
 		//if account owned by this user save the model else throw exception
-		if($ownsThisAccount)
+		if($this->userOwnsAccount($transaction->acc_id))
 		{
 			if(Yii::app()->request->isPostRequest)
 			{
@@ -334,6 +274,21 @@ class TransactionController extends Controller
 				throw new CHttpException(404,'The requested payees do not exist');
 			}
 		}
+	}
+	
+	protected function userOwnsAccount($accid)
+	{
+		foreach($this->userAccounts as $account)
+		{
+			$ownsThisAccount = false;
+			//test that one of the id's match 
+			if ($account['id']==$accid) 
+			{
+				$ownsThisAccount = true;
+				break;
+			}		
+		}
+		return $ownsThisAccount;
 	}
 	
 }
