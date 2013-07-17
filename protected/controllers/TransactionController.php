@@ -7,6 +7,13 @@ class TransactionController extends Controller
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout='//layouts/column2';
+	
+	// @var private property containing the associated user model instance
+	private $_user = null;
+	protected $userAccounts = null;
+	protected $userCategorys = null;
+	protected $userPayees = null;
+	
 
 	/**
 	 * @return array action filters
@@ -15,6 +22,8 @@ class TransactionController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
+			//usercontext loads the currently logged in user and limits operations on Transactions to those Accounts owned by him.
+			'userContext + create',
 		);
 	}
 
@@ -62,15 +71,31 @@ class TransactionController extends Controller
 	public function actionCreate()
 	{
 		$model=new Transaction;
-
+		
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['Transaction']))
 		{
 			$model->attributes=$_POST['Transaction'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			//test that the logged in user owns this account (check for tampering of post data)
+			//loop through this users accounts
+			foreach($this->userAccounts as $account)
+			{
+				$ownsThisAccount = false;
+				//test that one of the id's match 
+				if ($account['id']==$model->acc_id) 
+				{
+					$ownsThisAccount = true;
+					break;
+				}		
+			}
+			//if account owned by this user save the model else throw exception
+			if($ownsThisAccount)
+			{
+				if($model->save()) $this->redirect(array('view','id'=>$model->id));
+			}
+			else throw new CHttpException(403,'You are not authorized to add a Transaction to this account.');
 		}
 
 		$this->render('create',array(
@@ -173,4 +198,73 @@ class TransactionController extends Controller
 			Yii::app()->end();
 		}
 	}
+	
+	//since Transactions will belong to Accounts owned by the currently logged in user need to ensure 
+	//that the post array is not modified to a different account
+	public function filterUserContext($filterChain)
+	{
+		//load the associated user and accounts for this transaction which will be the currently
+		//logged in user and his or her accounts
+		$uid = Yii::app()->user->id;
+		$this->loadUser($uid);
+		$this->loadUserAccounts($uid);
+		$this->loadUserCategorys($uid);
+		$this->loadUserPayees($uid);
+
+		//continue to process the filter
+		$filterChain->run();	
+	}
+	
+	protected function loadUser($user_id)
+	{
+		if($this->_user===null)
+		{
+			$this->_user=User::model()->findbyPk($user_id);
+			if($this->_user===null)
+			{
+				throw new CHttpException(404,'The requested user does not
+				exist.');
+			}
+
+		}
+		return $this->_user;
+	}
+	
+	protected function loadUserAccounts($user_id)
+	{
+		if ($this->userAccounts===null)
+		{
+			$this->userAccounts=User::model()->getUserAccounts($user_id);
+			if($this->userAccounts===null)
+			{
+				throw new CHttpException(404,'The requested accounts do not exist');
+			}
+		}
+		//return $this->userAccounts;
+	}
+	
+	protected function loadUserCategorys($user_id)
+	{
+		if ($this->userCategorys===null)
+		{
+			$this->userCategorys=User::model()->getUserCategorys($user_id);
+			if($this->userCategorys===null)
+			{
+				throw new CHttpException(404,'The requested categorey do not exist');
+			}
+		}
+	}
+	
+	protected function loadUserPayees($user_id)
+	{
+		if ($this->userPayees===null)
+		{
+			$this->userPayees=User::model()->getUserPayees($user_id);
+			if($this->userPayees===null)
+			{
+				throw new CHttpException(404,'The requested payees do not exist');
+			}
+		}
+	}
+	
 }

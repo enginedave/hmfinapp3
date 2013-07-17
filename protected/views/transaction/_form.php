@@ -24,12 +24,12 @@
 						'class'=>'span5'
 					),
 				));   ?>
-				
-	<?php echo $form->dropDownListRow($model, 'acc_id', CHtml::listData(User::model()->getUserAccounts(Yii::app()->user->id), 'id', 'name'), array('class'=>'span5')); ?>
 	
-	<?php echo $form->dropDownListRow($model, 'cat_id', CHtml::listData(User::model()->getUserCategorys(Yii::app()->user->id), 'id', 'name'), array('class'=>'span5')); ?>
+	<?php echo $form->dropDownListRow($model, 'acc_id', CHtml::listData($this->userAccounts, 'id', 'name'), array('class'=>'span5')); ?>
 	
-	<?php echo $form->dropDownListRow($model, 'pay_id', CHtml::listData(User::model()->getUserPayees(Yii::app()->user->id), 'id', 'name'), array('class'=>'span5')); ?>
+	<?php echo $form->dropDownListRow($model, 'cat_id', CHtml::listData($this->userCategorys, 'id', 'name'), array('class'=>'span5')); ?>
+	
+	<?php echo $form->dropDownListRow($model, 'pay_id', CHtml::listData($this->userPayees, 'id', 'name'), array('class'=>'span5')); ?>
 	
 	<?php echo $form->textFieldRow($model,'amount',array('class'=>'span5','maxlength'=>10)); ?>
 	
