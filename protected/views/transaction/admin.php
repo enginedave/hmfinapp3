@@ -25,6 +25,26 @@ $('.search-form form').submit(function(){
 
 <h1>Manage Transactions</h1>
 
+<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
+	'id'=>'transaction-form',
+	'enableAjaxValidation'=>false,
+)); ?>
+	<p class="help-block">Fields with <span class="required">*</span> are required.</p>
+
+	<?php echo $form->errorSummary($selmodel); ?>
+
+	<?php echo $form->dropDownListRow($selmodel, 'acc_id', CHtml::listData($this->userAccounts, 'id', 'name'), array('class'=>'span5')); ?>
+	
+	<div class="form-actions">
+		<?php $this->widget('bootstrap.widgets.TbButton', array(
+			'buttonType'=>'submit',
+			'type'=>'primary',
+			'label'=>'List Transactions',
+		)); ?>
+	</div>
+	
+<?php $this->endWidget(); ?>
+
 <p>
 You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
 or <b>=</b>) at the beginning of each of your search values to specify how the comparison should be done.

@@ -17,9 +17,9 @@ $this->menu=array(
 )); ?>
 	<p class="help-block">Fields with <span class="required">*</span> are required.</p>
 
-	<?php echo $form->errorSummary($model); ?>
+	<?php echo $form->errorSummary($selmodel); ?>
 
-	<?php echo $form->dropDownListRow($model, 'acc_id', CHtml::listData($this->userAccounts, 'id', 'name'), array('class'=>'span5')); ?>
+	<?php echo $form->dropDownListRow($selmodel, 'acc_id', CHtml::listData($this->userAccounts, 'id', 'name'), array('class'=>'span5')); ?>
 	
 	<div class="form-actions">
 		<?php $this->widget('bootstrap.widgets.TbButton', array(

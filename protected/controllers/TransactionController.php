@@ -23,7 +23,7 @@ class TransactionController extends Controller
 		return array(
 			'accessControl', // perform access control for CRUD operations
 			//usercontext loads the currently logged in user and limits operations on Transactions to those Accounts owned by him.
-			'userContext + create, view, update, delete, index',
+			'userContext + create, view, update, delete, index, admin',
 		);
 	}
 
@@ -161,27 +161,27 @@ class TransactionController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$model=new Transaction;
+		$selmodel=new Transaction;
 		
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		// $this->performAjaxValidation($selmodel);
 
 		if(isset($_POST['Transaction']))
 		{
-			$model->attributes=$_POST['Transaction'];
+			$selmodel->attributes=$_POST['Transaction'];
 			//if account owned by this user proceed to populate the dataProvider with list of Transactions
-			if($this->userOwnsAccount($model->acc_id))
+			if($this->userOwnsAccount($selmodel->acc_id))
 			{
 				$dataProvider=new CActiveDataProvider('Transaction', array(
 					'criteria'=>array(
-						'condition'=>'acc_id='.$model->acc_id,
+						'condition'=>'acc_id='.$selmodel->acc_id,
 						'order'=>'date ASC',
 						)
 		
 					)
 				);
 				//get the acc_id from the posted form
-				//if($model->save()) $this->redirect(array('view','id'=>$model->id));
+				//if($selmodel->save()) $this->redirect(array('view','id'=>$selmodel->id));
 			}
 			else throw new CHttpException(403,'You are not authorized to access transactions on this account.');
 		}
@@ -199,7 +199,7 @@ class TransactionController extends Controller
 		}
 		
 		$this->render('index',array(
-			'model'=>$model,
+			'selmodel'=>$selmodel,
 			'dataProvider'=>$dataProvider,
 		));
 	}
@@ -209,14 +209,37 @@ class TransactionController extends Controller
 	 */
 	public function actionAdmin()
 	{
+		$selmodel=new Transaction;
+		
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($selmodel);
+		
 		$model=new Transaction('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Transaction']))
-			$model->attributes=$_GET['Transaction'];
+		if(isset($_GET['Transaction'])) $model->attributes=$_GET['Transaction'];
+
+		// if a selection has been made on the page i.e. a POST request
+		if(isset($_POST['Transaction']))
+		{
+			$selmodel->attributes=$_POST['Transaction'];
+			//if account owned by this user proceed to populate the model with list of Transactions
+			if($this->userOwnsAccount($selmodel->acc_id))
+			{
+				//limit the list of transactions to those by the currently logged in user and selected account
+				$model->acc_id = $selmodel->acc_id;
+			}
+			else throw new CHttpException(403,'You are not authorized to access transactions on this account.');
+		}
+		else
+		{
+			//limit the list of transactions to those by the currently logged in user and his first account
+			$model->acc_id = $this->userAccounts[0]['id'];
+		}
 
 		$this->render('admin',array(
-			'model'=>$model,
-		));
+				'selmodel'=>$selmodel,
+				'model'=>$model,
+			));
 	}
 
 	/**
