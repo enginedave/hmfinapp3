@@ -30,6 +30,8 @@ $this->pageTitle=Yii::app()->name;
 
 </ul>
 
+<p class="well">To register a new user account click <?php echo CHtml::link("here",array('user/create'))?></p>
+
 <p>For more details on how to further develop this application, please read
     the <a href="http://www.yiiframework.com/doc/">documentation</a>.
     Feel free to ask in the <a href="http://www.yiiframework.com/forum/">forum</a>,
