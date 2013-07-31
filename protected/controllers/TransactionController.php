@@ -23,7 +23,7 @@ class TransactionController extends Controller
 		return array(
 			'accessControl', // perform access control for CRUD operations
 			//usercontext loads the currently logged in user and limits operations on Transactions to those Accounts owned by him.
-			'userContext + create, view, update, delete',
+			'userContext + create, view, update, delete, index',
 		);
 	}
 
@@ -157,12 +157,49 @@ class TransactionController extends Controller
 	}
 
 	/**
-	 * Lists all models.
+	 * Lists all models for this user account.
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Transaction');
+		$model=new Transaction;
+		
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+
+		if(isset($_POST['Transaction']))
+		{
+			$model->attributes=$_POST['Transaction'];
+			//if account owned by this user proceed to populate the dataProvider with list of Transactions
+			if($this->userOwnsAccount($model->acc_id))
+			{
+				$dataProvider=new CActiveDataProvider('Transaction', array(
+					'criteria'=>array(
+						'condition'=>'acc_id='.$model->acc_id,
+						'order'=>'date ASC',
+						)
+		
+					)
+				);
+				//get the acc_id from the posted form
+				//if($model->save()) $this->redirect(array('view','id'=>$model->id));
+			}
+			else throw new CHttpException(403,'You are not authorized to access transactions on this account.');
+		}
+		else
+		{
+			$dataProvider=new CActiveDataProvider('Transaction', array(
+				'criteria'=>array(
+					//set acc_id equal to the id of the first account owned by this user
+					'condition'=>'acc_id='.$this->userAccounts[0]['id'],
+					'order'=>'date ASC',
+					)
+		
+				)
+			);
+		}
+		
 		$this->render('index',array(
+			'model'=>$model,
 			'dataProvider'=>$dataProvider,
 		));
 	}
