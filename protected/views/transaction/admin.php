@@ -62,11 +62,11 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-		'id',
+		//'id',
 		'date',
-		'acc_id',
-		'cat_id',
-		'pay_id',
+		//'acc.name',
+		array('name'=>'cat.name','header'=>'Category'),
+		array('name'=>'pay.name','header'=>'Payee'),
 		'amount',
 		/*
 		'reconciled',

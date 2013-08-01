@@ -54,7 +54,7 @@ class Transaction extends HmfinappActiveRecord
 			array('amount', 'length', 'max'=>10),
 			array('notes', 'length', 'max'=>256),
 			array('date', 'safe'),
-			array('date, amount', 'required'),
+			array('date, amount, acc_id, cat_id, pay_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, date, acc_id, cat_id, pay_id, amount, reconciled, notes', 'safe', 'on'=>'search'),
