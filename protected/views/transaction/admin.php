@@ -68,6 +68,11 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		array('name'=>'cat.name','header'=>'Category'),
 		array('name'=>'pay.name','header'=>'Payee'),
 		'amount',
+		array(
+			'header'=>'Balance',
+			'class'=>'TotalColumn',
+			'attribute'=>'amount',
+		),
 		/*
 		'reconciled',
 		'notes',
